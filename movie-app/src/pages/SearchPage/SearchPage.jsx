@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react"
 import "./SearchPage.css"
+import Stats from "../../components/stats/stats"
+import MovieCard from "../../components/movieCard/movieCard"
 const SearchPage = () => {
     const [movieName, setMovieName] = useState("")
-    const [movies, setMovies] = useState([])
+    const [movies, setMovies] = useState(undefined)
 
     useEffect(() => {
         console.log(movies)
     }, [movies])
     const handleSearch = async () => {
         try {
-            const res = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=batman&page=1`)
+
+            const parameters = new URLSearchParams({
+            apikey: import.meta.env.VITE_MOVIE_APP_APYKEY, s: movieName, page: 1
+            })
+            const res = await fetch(`https://www.omdbapi.com/?${parameters.toString()}`)
             const json = await res.json()
+            setMovies(json);
         } catch (err) {
             console.error(err)
         }
@@ -23,12 +30,12 @@ const SearchPage = () => {
                     <input type="text" className="search-input" placeholder="Search for movies..." value={movieName} onChange={(e) => setMovieName(e.target.value)} />
                     <button onClick={handleSearch} className="search-button">Search</button>
                 </div>
-                <div className="results-info">
-                    Total Results: 201 | Showing: 10 movies
-                </div>
+                {movies && <Stats {...movies} />}
+
             </div>
 
             <div className="movie-grid">
+                {movies && movies.Search.map((movie) => <MovieCard {...movie}/>)}
                 {/* <div className="movie-card">
                     <div className="poster-container">
                         <img
