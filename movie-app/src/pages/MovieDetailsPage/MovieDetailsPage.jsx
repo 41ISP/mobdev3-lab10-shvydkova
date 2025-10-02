@@ -1,25 +1,50 @@
-const MovieDetailsPage = () => {
+import { Link, useParams } from "react-router-dom"
+import "./MovieDetailsPage.css"
+import { useEffect } from "react"
+import { useState } from "react"
+const MovieDetailsPage = ({Actors, Awards, Country, Director, Genre, Language, Metascore, 
+    Plot, Poster, Rated, Ratings, Released, Response, Runtime, Title, Type, Writer, Year, 
+    imdbID, imdbRating, imdbVotes, totalSeasons}) => {
+    const [movie, setMovie] = useState(undefined)
+    const { id } = useParams()
+    useEffect(() => {
+        const handleSearch = async () => {
+            try {
+                const parameters = new URLSearchParams({
+                    apikey: import.meta.env.VITE_MOVIE_APP_APYKEY, i: id
+                })
+                const res = await fetch(`https://www.omdbapi.com/?${parameters.toString()}`)
+                const json = await res.json()
+                if (json.Response === "False") throw new Error("Не получилось получить фильм")
+                setMovie(json);
+                console.log(json);
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        handleSearch();
+    }, [])
     return (
         <div className="container">
-            <a href="#" className="back-button">← Back to Search</a>
+            <Link to="/" className="back-button">← Back to Search</Link>
 
             <div className="movie-detail-card">
                 <div className="movie-header">
                     <div className="poster-section">
                         <img
-                            src="https://m.media-amazon.com/images/M/MV5BNzY3OWQ5NDktNWQ2OC00ZjdlLThkMmItMDhhNDk3NTFiZGU4XkEyXkFqcGc@._V1_SX300.jpg"
-                            alt="Joker"
+                            src={Poster}
+                            alt={Title}
                             className="poster-image" />
-                        <div className="rating-badge">⭐ 8.3</div>
+                        <div className="rating-badge">{movie.imdbRating}</div>
                     </div>
 
                     <div className="info-section">
-                        <h1 className="movie-title">Joker</h1>
+                        <h1 className="movie-title">{movie.Title}</h1>
                         <div className="movie-tagline">
-                            <span className="tag">2019</span>
-                            <span className="tag rated">R</span>
-                            <span className="tag">122 min</span>
-                            <span className="tag">Crime, Drama, Thriller</span>
+                            <span className="tag">{movie.Year}</span>
+                            <span className="tag rated">{movie.Rated}</span>
+                            <span className="tag">{movie.Runtime}</span>
+                            <span className="tag">{Genre}</span>
                         </div>
 
                         <div className="movie-meta">

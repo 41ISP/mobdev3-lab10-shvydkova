@@ -1,6 +1,14 @@
-const MovieCard = ({ Title, Year, Type, ImdbID, Poster }) => {
+import {useNavigate} from "react-router-dom"
+
+const MovieCard = ({ Title, Year, Type, imdbID, Poster }) => {
+    const navigate = useNavigate()
+    const handleClick = () => {
+
+        navigate(`movie/${imdbID}`)
+
+    }
     return (
-        <div className="movie-card">
+        <div onClick={handleClick} className="movie-card">
             <div className="poster-container">
                 <img
                     src={Poster}
@@ -12,7 +20,7 @@ const MovieCard = ({ Title, Year, Type, ImdbID, Poster }) => {
                     <span className="movie-year">{Year}</span>
                     <span className="movie-type">{Type}</span>
                 </div>
-                <div className="movie-id">{ImdbID}</div>
+                <div className="movie-id">{imdbID}</div>
             </div>
         </div>
     )
